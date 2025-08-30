@@ -1,5 +1,3 @@
-
-
 #include "M5Cardputer.h"
 #include <M5Unified.h>
 
@@ -71,7 +69,7 @@ void printTime(int minutes,int seconds){
 
 }
 
-void beeper(){
+void OldBeeper(){
 
            M5.begin(cfg);
 
@@ -120,7 +118,85 @@ void beeper(){
 
 
 
+} // OldBeeper()
+
+
+
+void beeper(){
+
+           M5.begin(cfg);
+
+            M5.Speaker.begin();
+
+
+            /// The setVolume function can be set the master volume in the range of 0-255. (default : 64)
+            M5.Speaker.setVolume(255);
+
+            /// The setAllChannelVolume function can be set the all virtual channel volume in the range of 0-255. (default : 255)
+            M5.Speaker.setAllChannelVolume(255);
+
+            /// The setChannelVolume function can be set the specified virtual channel volume in the range of 0-255. (default : 255)
+            M5.Speaker.setChannelVolume(0, 255);
+
+
+            /// tone data (8bit unsigned wav)
+            const uint8_t wavdata[64] = { 132,138,143,154,151,139,138,140,144,147,147,147,151,159,184,194,203,222,228,227,210,202,197,181,172,169,177,178,172,151,141,131,107,96,87,77,73,66,42,28,17,10,15,25,55,68,76,82,80,74,61,66,79,107,109,103,81,73,86,94,99,112,121,129 };
+
+            const float note[8] = { 261.63 ,293.66, 329.63, 349.23, 392.00, 440.00, 493.88 , 523.25 };
+
+
+            //for ( int loops = 0; loops < 2 ; loops++){
+
+                //for ( int loopy = 7; loopy >= 0 ; loopy--){
+
+                 //float freq = note[loopy];
+
+
+            float freq = 3000;
+
+            int dur = 200;
+
+
+
+            for ( int vol = 0 ; vol <= 128 ; vol ++ ){
+           
+                M5.Speaker.setVolume(vol);
+                M5.Speaker.setAllChannelVolume(vol);
+                M5.Speaker.setChannelVolume(0,vol);
+
+
+                M5.Speaker.tone(freq, dur, 1, true, wavdata, sizeof(wavdata));
+                M5.delay(10);
+
+
+                while (M5.Speaker.isPlaying()) {
+
+                     M5.delay(10); 
+
+                } // Wait for the output to finish.
+
+            } // vol
+
+
+            for (int  blip = 0 ; blip < 8 ; blip++){
+
+                M5.Speaker.tone(freq, 50, 1, true, wavdata, sizeof(wavdata));
+                M5.delay(50);
+                
+                M5.Speaker.tone(freq, 50, 1, true, wavdata, sizeof(wavdata));
+                M5.delay(50);
+
+                M5.delay(500);
+
+                
+            }
+
+
+
+
 } // beeper()
+
+
 
 
 void beep(){
@@ -263,6 +339,8 @@ void setup() {
 
 
     tDelay = 1000;
+
+    //beeper();
 
 }
 
